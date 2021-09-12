@@ -11,25 +11,25 @@ import "./Shop.css";
 const Shop = () => {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
-
-  useEffect(() => {
-    const savedCart = getDatabaseCart();
-    const productKeys = Object.keys(savedCart);
-    if (products.length > 0) {
-      const previousCart = productKeys.map((existingKey) => {
-        const product = products.find((pd) => pd.key === existingKey);
-        product.quantity = savedCart[existingKey];
-        return product;
-      });
-      setCart(previousCart);
-    }
-  }, [products]);
-
+  
   useEffect(() => {
     fetch("http://localhost:5000/products")
       .then((res) => res.json())
       .then((data) => setProducts(data));
   }, []);
+
+  useEffect(() => {
+    const savedCart = getDatabaseCart();
+    const productKeys = Object.keys(savedCart);
+    fetch("http://localhost:5000/productsByKeys", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(productKeys),
+    })
+      .then((res) => res.json())
+      .then((data) => setCart(data));
+  }, []);
+
 
   const handleAddProduct = (product) => {
     const toBeAddedKey = product.key;
