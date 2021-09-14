@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { UserContext } from '../../App';
-import { getDatabaseCart } from '../../utilities/databaseManager';
+import { getDatabaseCart, processOrder } from '../../utilities/databaseManager';
 import './Shipment.css';
 
 const Shipment = () => {
@@ -21,6 +21,7 @@ const Shipment = () => {
       .then(response => response.json())
       .then(data => {
         if(data){
+          processOrder()
           alert("Your order placed successfully!");
         }
       })
